@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>XAU Risk Calculator</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+background:#111;
+color:white;
+padding:15px;
+}
+
+.container{
+
+max-width:500px;
+margin:auto;
+
+}
+
+.card{
+
+background:#222;
+padding:15px;
+border-radius:15px;
+margin-bottom:15px;
+
+}
+
+h2{
+text-align:center;
+margin-bottom:15px;
+}
+
+label{
+display:block;
+margin-top:10px;
+margin-bottom:5px;
+}
+
+input,select{
+
+width:100%;
+padding:12px;
+border:none;
+border-radius:8px;
+font-size:16px;
+
+}
+
+.result{
+
+margin-top:20px;
+padding:15px;
+background:#333;
+border-radius:10px;
+text-align:center;
+
+}
+
+.big{
+
+font-size:35px;
+font-weight:bold;
+color:#00ff99;
+
+}
+
+.info{
+
+margin-top:8px;
+font-size:15px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h2>XAU/USD Calculator</h2>
+
+<div class="info">
+Wallet : $600
+</div>
+
+<div class="info">
+Daily Loss : $30
+</div>
+
+<div class="info">
+Daily Profit : $18
+</div>
+
+<div class="info">
+Risk : $6 / Trade
+</div>
+
+<div class="info">
+RR : 1:2
+</div>
+
+<hr style="margin:15px 0">
+
+<label>Trade Type</label>
+
+<select id="type">
+
+<option>BUY</option>
+<option>SELL</option>
+
+</select>
+
+<label>Entry Price</label>
+
+<input type="number" id="entry" step="0.01">
+
+<label>Stop Loss</label>
+
+<input type="number" id="sl" step="0.01">
+
+<div class="result">
+
+Lot Size
+
+<div class="big" id="lot">
+
+0.00
+
+</div>
+
+<div class="info">
+
+Risk Amount :
+$6
+
+</div>
+
+<div class="info" id="slpips">
+
+SL Distance : 0
+
+</div>
+
+<div class="info" id="tp">
+
+Take Profit :
+
+0
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const wallet=600;
+
+const riskPercent=1;
+
+const riskMoney=wallet*(riskPercent/100);
+
+function calc(){
+
+let entry=parseFloat(document.getElementById("entry").value);
+
+let sl=parseFloat(document.getElementById("sl").value);
+
+if(isNaN(entry)||isNaN(sl)){
+
+document.getElementById("lot").innerHTML="0.00";
+
+return;
+
+}
+
+let distance=Math.abs(entry-sl);
+
+document.getElementById("slpips").innerHTML=
+"SL Distance : "+distance.toFixed(2);
+
+if(distance<=0){
+
+document.getElementById("lot").innerHTML="0.00";
+
+return;
+
+}
+
+let lot=riskMoney/(distance*100);
+
+lot=Math.floor(lot*100)/100;
+
+if(lot<0.01){
+
+lot=0.01;
+
+}
+
+document.getElementById("lot").innerHTML=
+lot.toFixed(2);
+
+let rr=2;
+
+let tpDistance=distance*rr;
+
+let tp;
+
+if(document.getElementById("type").value=="BUY"){
+
+tp=entry+tpDistance;
+
+}
+else{
+
+tp=entry-tpDistance;
+
+}
+
+document.getElementById("tp").innerHTML=
+"Take Profit : "+tp.toFixed(2);
+
+}
+
+document.getElementById("entry").addEventListener("input",calc);
+
+document.getElementById("sl").addEventListener("input",calc);
+
+document.getElementById("type").addEventListener("change",calc);
+
+</script>
+
+</body>
+</html>
